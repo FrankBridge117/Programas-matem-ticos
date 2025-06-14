@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<!-- Indica que este documento es HTML5 -->
+<html lang="es">
+<!-- Establece el idioma del contenido como español -->
+<head>
+  <meta charset="UTF-8">
+  <!-- Establece la codificación de caracteres a UTF-8 -->
+  <title>Raíces de Ecuaciones No Lineales</title>
+  <!-- Título de la página mostrado en la pestaña del navegador -->
+
+  <!-- Carga las bibliotecas externas para graficar y evaluar funciones -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js para gráficas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script> <!-- Math.js para cálculos matemáticos -->
+
+  <style>
+    /* Estilos CSS con una estética neon gamer */
+    body {
+      font-family: 'Courier New', Courier, monospace; /* Fuente tipo consola */
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e); /* Fondo con degradado */
+      background-size: 400% 400%;
+      animation: neonBackground 10s ease infinite; /* Animación del fondo */
+      color: #00ffff; /* Color del texto */
+      padding: 20px; /* Espaciado interno */
+    }
+
+    @keyframes neonBackground {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    h1, h2 {
+      color: #39ff14;
+      text-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14; /* Brillo de texto */
+    }
+
+    input, select, button {
+      margin: 8px;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+      background-color: #1a1a2e;
+      color: #00ffff;
+    }
+
+    button {
+      background-color: #00ffff;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s; /* Transición suave */
+    }
+
+    button:hover {
+      background-color: #39ff14;
+      color: black;
+    }
+
+    #resultado {
+      background-color: #0f0c29;
+      padding: 15px;
+      margin-top: 10px;
+      border: 2px solid #39ff14;
+      border-radius: 10px;
+    }
+
+    #instrucciones {
+      background-color: #222;
+      color: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      border-left: 5px solid #00ffff;
+    }
+
+    canvas {
+      max-width: 600px;
+      background-color: white;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Título principal -->
+  <h1>Calculadora de Raíces No Lineales</h1>
+
+  <!-- Entradas de usuario -->
+  <label>Función f(x): <input id="funcion" value="exp(x^2)-2" /></label><br>
+  <label>Método:
+    <select id="metodo">
+      <option value="biseccion">Bisección</option>
+      <option value="newton">Newton-Raphson</option>
+    </select>
+  </label><br>
+  <label>Intervalo inicial a (Bisección): <input type="number" id="a" value="0" step="any"></label><br>
+  <label>Intervalo inicial b (Bisección): <input type="number" id="b" value="2" step="any"></label><br>
+  <label>Valor inicial x0 (Newton): <input type="number" id="x0" value="1" step="any"></label><br>
+  <label>Margen de error: <input type="number" id="error" value="0.0001" step="any"></label><br>
+
+  <!-- Botón para ejecutar el cálculo -->
+  <button onclick="calcular()">Calcular</button>
+
+  <h2>Resultado</h2>
+  <div id="resultado"></div> <!-- Se muestra el resultado aquí -->
+
+  <canvas id="grafica"></canvas> <!-- Contenedor para la gráfica -->
+
+  <!-- Instrucciones de uso -->
+  <div id="instrucciones">
+    <h3>Ejemplo de Uso</h3>
+    <p>Introduce la función <code>exp(x^2)-2</code>... etc.</p>
+  </div>
+
+  <script>
+    // Función principal que calcula según el método elegido
+    function calcular() {
+      const f = math.parse(document.getElementById("funcion").value).compile(); // Compila la función ingresada
+      const metodo = document.getElementById("metodo").value; // Obtiene el método seleccionado
+      const tol = parseFloat(document.getElementById("error").value); // Tolerancia del error
+      const fx = x => f.evaluate({x}); // Define la función evaluable
+      const resultado = document.getElementById("resultado");
+      resultado.innerHTML = "";
+
+      if (metodo === "biseccion") {
+        let a = parseFloat(document.getElementById("a").value);
+        let b = parseFloat(document.getElementById("b").value);
+        let c, fc;
+        let pasos = 0;
+
+        if (fx(a) * fx(b) >= 0) {
+          resultado.innerHTML = "El intervalo no cumple con f(a)*f(b) < 0.";
+          return;
+        }
+
+        // Iteraciones del método de bisección
+        while ((b - a) / 2 > tol) {
+          c = (a + b) / 2;
+          fc = fx(c);
+          pasos++;
+          if (fc === 0 || (b - a) / 2 < tol) break;
+          if (fx(a) * fc < 0) b = c; else a = c;
+        }
+        resultado.innerHTML = `Raíz ≈ ${c} en ${pasos} iteraciones`;
+        graficar(fx, a - 1, b + 1, c);
+      } else {
+        let x = parseFloat(document.getElementById("x0").value);
+        let pasos = 0;
+        let h;
+        // Iteraciones de Newton-Raphson
+        while (true) {
+          const f1 = fx(x);
+          const dfx = math.derivative(document.getElementById("funcion").value, 'x').compile();
+          const f2 = dfx.evaluate({x});
+          h = f1 / f2;
+          x = x - h;
+          pasos++;
+          if (Math.abs(h) < tol) break;
+        }
+        resultado.innerHTML = `Raíz ≈ ${x} en ${pasos} iteraciones`;
+        graficar(fx, x - 2, x + 2, x);
+      }
+    }
+
+    // Función para graficar la función y la raíz encontrada
+    function graficar(fx, xmin, xmax, raiz) {
+      const ctx = document.getElementById("grafica").getContext("2d");
+      const labels = [], datos = [];
+      for (let x = xmin; x <= xmax; x += (xmax - xmin) / 100) {
+        labels.push(x.toFixed(2));
+        datos.push(fx(x));
+      }
+
+      if (window.miGrafica) window.miGrafica.destroy(); // Elimina gráficas anteriores
+      window.miGrafica = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'f(x)',
+              data: datos,
+              borderColor: '#00ffff',
+              borderWidth: 2,
+              fill: false
+            },
+            {
+              label: 'Raíz',
+              data: labels.map(x => Math.abs(x - raiz) < 0.05 ? 0 : null),
+              backgroundColor: '#ff0000',
+              pointRadius: 5,
+              type: 'line',
+              fill: false,
+              showLine: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { title: { display: true, text: 'x' } },
+            y: { title: { display: true, text: 'f(x)' } }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

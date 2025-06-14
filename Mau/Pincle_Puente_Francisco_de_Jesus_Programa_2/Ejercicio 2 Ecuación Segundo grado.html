@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<!-- Esta línea indica que el documento es HTML5 -->
+<html lang="es">
+<!-- El atributo lang="es" define que el idioma del contenido es español -->
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- Esto asegura que los caracteres especiales como tildes o ñ se muestren correctamente -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Esto permite que el sitio se vea bien en móviles y tablets adaptando su tamaño -->
+
+  <title>Soluciones de Ecuación Cuadrática</title>
+  <!-- Título que aparece en la pestaña del navegador -->
+
+  <style>
+    /* ESTILOS DEL SITIO */
+    
+    body {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      /* Fondo con un degradado en diagonal (135°) entre dos colores */
+
+      font-family: 'Segoe UI', sans-serif;
+      /* Tipo de letra moderno y legible */
+
+      color: white;
+      /* Texto en color blanco para que resalte sobre el fondo */
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      /* El contenido se centra vertical y horizontalmente usando Flexbox */
+      margin: 0;
+    }
+
+    .container {
+      background-color: rgba(0, 0, 0, 0.4);
+      /* Fondo semi-transparente para resaltar el contenido */
+
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      /* Estilo de tarjeta: bordes redondeados y sombra */
+
+      text-align: center;
+      width: 350px;
+    }
+
+    input {
+      padding: 10px;
+      width: 80%;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      /* Campos de texto cómodos y bonitos */
+    }
+
+    button {
+      margin: 10px 5px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background-color: #4ade80;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      /* Botones con estilo moderno y animación al pasar el mouse */
+    }
+
+    button:hover {
+      background-color: #22c55e;
+      /* Cambia el color del botón al pasar el mouse */
+    }
+
+    .output {
+      margin-top: 20px;
+      font-size: 18px;
+      /* Área donde se muestra el resultado */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Ecuación de Segundo Grado</h2>
+    <!-- Este sería el título de nuestro programa -->
+
+    <!-- Campos para que el usuario introduzca los coeficientes -->
+    <input type="text" id="a" placeholder="Coeficiente a" />
+    <input type="text" id="b" placeholder="Coeficiente b" />
+    <input type="text" id="c" placeholder="Coeficiente c" />
+
+    <div>
+      <!-- Botones de acción -->
+      <button onclick="calcular()">Calcular</button>
+      <button onclick="limpiar()">Limpiar</button>
+    </div>
+
+    <!-- Aquí se mostrará el resultado o el error -->
+    <div class="output" id="resultado"></div>
+  </div>
+
+  <!-- SCRIPTS: Aquí empieza el código JavaScript -->
+  <script>
+    // Esta función convierte el texto ingresado en un número válido
+    function convertirEntrada(valor) {
+      valor = valor.trim(); // Elimina espacios extra
+
+      // Verifica si el valor es una fracción como "3/4"
+      if (/^-?\d+\/\d+$/.test(valor)) {
+        const [numerador, denominador] = valor.split('/').map(Number);
+        if (denominador === 0) throw new Error("División entre cero no permitida.");
+        return numerador / denominador;
+      }
+
+      // Si no es fracción, verifica si es un número entero o decimal
+      if (/^-?\d+(\.\d+)?$/.test(valor)) {
+        return parseFloat(valor);
+      }
+
+      // Si no cumple con nada de lo anterior, lanza un error
+      throw new Error("Entrada no válida. Usa solo números, decimales o fracciones como '3/4'.");
+    }
+
+    // Esta función calcula las soluciones de la ecuación cuadrática
+    function calcular() {
+      const res = document.getElementById("resultado"); // Zona donde se escribe el resultado
+      let a, b, c;
+
+      try {
+        // Se obtienen y convierten los valores ingresados
+        a = convertirEntrada(document.getElementById("a").value);
+        b = convertirEntrada(document.getElementById("b").value);
+        c = convertirEntrada(document.getElementById("c").value);
+
+        if (a === 0) throw new Error("El coeficiente 'a' no puede ser cero (no sería una ecuación cuadrática).");
+
+        const D = b * b - 4 * a * c; // Se calcula el discriminante
+
+        let x1, x2;
+
+        // Se evalúa el discriminante para determinar el tipo de solución
+        if (D < 0) {
+          // Raíces complejas (con números imaginarios)
+          const parteReal = (-b / (2 * a)).toFixed(4);
+          const parteImaginaria = (Math.sqrt(-D) / (2 * a)).toFixed(4);
+          x1 = `${parteReal} + ${parteImaginaria}i`;
+          x2 = `${parteReal} - ${parteImaginaria}i`;
+          res.innerHTML = `Raíces complejas:<br>x₁ = ${x1}, x₂ = ${x2}`;
+        } else if (D === 0) {
+          // Raíz doble (una sola solución)
+          x1 = (-b / (2 * a)).toFixed(4);
+          res.innerHTML = `Raíz múltiple:<br>x = ${x1}`;
+        } else {
+          // Dos soluciones reales diferentes
+          x1 = ((-b + Math.sqrt(D)) / (2 * a)).toFixed(4);
+          x2 = ((-b - Math.sqrt(D)) / (2 * a)).toFixed(4);
+          res.innerHTML = `Raíces reales:<br>x₁ = ${x1}, x₂ = ${x2}`;
+        }
+
+        limpiarEntradas(); // Limpia los campos una vez calculado
+
+      } catch (error) {
+        // Si ocurre algún error (ej. valor inválido), se muestra en pantalla
+        res.innerHTML = `<strong>Error:</strong> ${error.message}`;
+      }
+    }
+
+    // Esta función borra los campos de entrada
+    function limpiarEntradas() {
+      document.getElementById("a").value = "";
+      document.getElementById("b").value = "";
+      document.getElementById("c").value = "";
+    }
+
+    // Esta función limpia todo: campos y resultados
+    function limpiar() {
+      limpiarEntradas();
+      document.getElementById("resultado").innerHTML = "";
+    }
+  </script>
+
+</html>

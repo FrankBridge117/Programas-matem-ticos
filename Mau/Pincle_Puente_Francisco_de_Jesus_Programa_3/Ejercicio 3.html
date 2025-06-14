@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PROGRAMA 3</title>
+  <!-- Importamos la fuente Poppins de Google Fonts para darle un aspecto moderno -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Estilos generales para resetear márgenes y establecer la fuente */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Fondo animado con gradiente que cambia de colores */
+    body {
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #333;
+    }
+    
+    /* Animación del gradiente de fondo */
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+    
+    /* Contenedor principal con efecto de flotación */
+    .container {
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      padding: 30px;
+      width: 100%;
+      max-width: 800px;
+      transform: translateY(0);
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    /* Animación de flotación para el contenedor */
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+      100% {
+        transform: translateY(0px);
+      }
+    }
+    
+    /* Estilo para el título principal con línea decorativa */
+    h2 {
+      color: #333;
+      margin-bottom: 25px;
+      text-align: center;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 10px;
+    }
+    
+    /* Línea decorativa debajo del título */
+    h2:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(to right, #23a6d5, #23d5ab);
+      border-radius: 2px;
+    }
+    
+    /* Contenedor para cada grupo de entrada */
+    .input-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    /* Estilo para las etiquetas de los campos */
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+    }
+    
+    /* Estilo para los campos de entrada */
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    
+    /* Efecto al enfocar los campos de entrada */
+    input:focus {
+      border-color: #23a6d5;
+      box-shadow: 0 0 0 3px rgba(35, 166, 213, 0.2);
+      outline: none;
+    }
+    
+    /* Estilo para el botón de calcular */
+    button {
+      background: linear-gradient(to right, #23a6d5, #23d5ab);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: block;
+      width: 100%;
+      margin-bottom: 25px;
+    }
+    
+    /* Efectos al pasar el mouse sobre el botón */
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Efecto al hacer clic en el botón */
+    button:active {
+      transform: translateY(0);
+    }
+    
+    /* Estilo para subtítulos */
+    h3 {
+      margin: 25px 0 15px;
+      color: #444;
+    }
+    
+    /* Contenedor de la tabla con scroll horizontal */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Estilo para la tabla de resultados */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      overflow: hidden;
+    }
+    
+    /* Estilo para celdas de la tabla */
+    th, td {
+      padding: 12px 15px;
+      text-align: center;
+      border: none;
+    }
+    
+    /* Estilo para encabezados de la tabla */
+    th {
+      background-color: #23a6d5;
+      color: white;
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Filas alternas con color de fondo diferente */
+    tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    
+    /* Animación para las filas de la tabla */
+    tbody tr {
+      transition: all 0.3s ease;
+      animation: fadeIn 0.5s ease-out forwards;
+      opacity: 0;
+    }
+    
+    /* Animación de aparición para las filas */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Efecto al pasar el mouse sobre las filas */
+    tbody tr:hover {
+      background-color: #f1f1f1;
+      transform: scale(1.01);
+    }
+    
+    /* Contenedor para el indicador de carga */
+    .loading {
+      display: none;
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    /* Animación del spinner de carga */
+    .loading-spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(35, 166, 213, 0.3);
+      border-radius: 50%;
+      border-top-color: #23a6d5;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    /* Animación de rotación para el spinner */
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+    /* Contenedor para la información del resultado */
+    .result-info {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      display: none;
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+    
+    /* Estilo para mensajes de error */
+    .error {
+      color: #e73c7e;
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Calculadora de e^x con Serie de Mclaurin</h2>
+    
+    <!-- Formulario para ingresar el valor de x -->
+    <div class="input-group">
+      <label for="x">Valor de x:</label>
+      <input type="text" id="x" placeholder="Ingrese un valor">
+      <div id="x-error" class="error">Por favor ingrese un valor válido</div>
+    </div>
+    
+    <!-- Formulario para ingresar el margen de error deseado -->
+    <div class="input-group">
+      <label for="error">Margen de error (ej. 0.0001):</label>
+      <input type="text" id="error" placeholder="Ingrese el margen de error deseado">
+      <div id="error-error" class="error">Por favor ingrese un valor válido</div>
+    </div>
+    
+    <!-- Botón para iniciar el cálculo -->
+    <button onclick="calcular()">Calcular</button>
+    
+    <!-- Indicador de carga mientras se realizan los cálculos -->
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Calculando...</p>
+    </div>
+    
+    <!-- Sección que muestra información sobre el resultado -->
+    <div id="result-info" class="result-info">
+      <p>Valor real de e<sup id="x-value"></sup>: <span id="real-value"></span></p>
+      <p>Términos necesarios: <span id="terms-needed"></span></p>
+    </div>
+    
+    <!-- Sección de la tabla de resultados -->
+    <h3>Resultado:</h3>
+    <div class="table-container">
+      <table id="tablaResultados">
+        <thead>
+          <tr>
+            <th>Términos</th>
+            <th>Aproximación</th>
+            <th>Error Relativo (%)</th>
+            <th>Error Absoluto (%)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Función para analizar fracciones ingresadas como texto
+     * Permite al usuario ingresar valores como "1/2" y los convierte a decimales (0.5)
+     * @param {string} input - El texto ingresado por el usuario
+     * @return {number} - El valor decimal de la fracción o el número ingresado
+     */
+    function parseFraction(input) {
+      // Verifica si el input contiene una barra de división (/)
+      if (input.includes('/')) {
+        // Divide el texto en numerador y denominador
+        const parts = input.split('/');
+        if (parts.length === 2) {
+          const numerator = parseFloat(parts[0]);
+          const denominator = parseFloat(parts[1]);
+          
+          // Verifica que ambos valores sean números válidos y que el denominador no sea cero
+          if (!isNaN(numerator) && !isNaN(denominator) && denominator !== 0) {
+            return numerator / denominator; // Retorna la división
+          }
+        }
+        return NaN; // Retorna NaN si la fracción no es válida
+      }
+      
+      // Si no es una fracción, intenta convertir directamente a número
+      return parseFloat(input);
+    }
+    
+    /**
+     * Valida los datos ingresados por el usuario
+     * Muestra mensajes de error si los datos no son válidos
+     * @param {string} inputId - ID del elemento de entrada a validar
+     * @param {string} errorId - ID del elemento donde mostrar el error
+     * @return {number|boolean} - El valor numérico si es válido, o false si no lo es
+     */
+    function validateInput(inputId, errorId) {
+      const input = document.getElementById(inputId).value.trim();
+      const errorElement = document.getElementById(errorId);
+      
+      // Verifica si el campo está vacío
+      if (input === '') {
+        errorElement.style.display = 'block';
+        return false;
+      }
+      
+      let value;
+      // Para el valor de x, permite fracciones
+      if (inputId === 'x') {
+        value = parseFraction(input);
+      } else {
+        value = parseFloat(input);
+      }
+      
+      // Verifica si el valor es un número válido
+      if (isNaN(value)) {
+        errorElement.style.display = 'block';
+        return false;
+      }
+      
+      // Si todo está bien, oculta el mensaje de error y retorna el valor
+      errorElement.style.display = 'none';
+      return value;
+    }
+    
+    /**
+     * Calcula el factorial de un número
+     * Necesario para la serie de Mclaurin: e^x = 1 + x/1! + x²/2! + x³/3! + ...
+     * @param {number} num - El número para calcular su factorial
+     * @return {number} - El factorial del número
+     */
+    function factorial(num) {
+      if (num === 0 || num === 1) return 1; // Caso base: 0! = 1! = 1
+      
+      let fact = 1;
+      // Multiplica todos los números desde 2 hasta num
+      for (let i = 2; i <= num; i++) {
+        fact *= i;
+      }
+      return fact;
+    }
+    
+    /**
+     * Función principal que realiza el cálculo de e^x usando la serie de Mclaurin
+     * Muestra los resultados en una tabla con la aproximación y los errores
+     */
+    function calcular() {
+      // Oculta los mensajes de error previos
+      document.getElementById('x-error').style.display = 'none';
+      document.getElementById('error-error').style.display = 'none';
+      
+      // Valida los datos ingresados
+      const x = validateInput('x', 'x-error');
+      const margen = validateInput('error', 'error-error');
+      
+      // Si algún dato no es válido, detiene la ejecución
+      if (x === false || margen === false) {
+        return;
+      }
+      
+      // Muestra el indicador de carga
+      document.getElementById('loading').style.display = 'block';
+      
+      // Limpia la tabla de resultados anteriores
+      const tabla = document.getElementById("tablaResultados").querySelector("tbody");
+      tabla.innerHTML = "";
+      
+      // Usa setTimeout para no bloquear la interfaz durante los cálculos
+      setTimeout(() => {
+        // Calcula el valor real de e^x usando la función Math.exp
+        const resultadoReal = Math.exp(x);
+        
+        let suma = 1;    // Primer término de la serie (x^0/0! = 1)
+        let anterior = 0; // No hay término anterior para el primer término
+        let n = 0;       // Contador de términos (comenzamos desde el primer término)
+        let delay = 0;   // Retraso para la animación de las filas
+        
+        // Para el primer término, calculamos solo el error absoluto
+        let errorAbsolutoPorc = (suma / resultadoReal) * 100;
+        let errorAbsolutoPorcFinal = 100 - errorAbsolutoPorc;
+        
+        // Crea la primera fila en la tabla
+        const primeraFila = tabla.insertRow();
+        primeraFila.style.animationDelay = `${delay}ms`;
+        delay += 50;
+        
+        primeraFila.innerHTML = `
+          <td>${n + 1}</td>
+          <td>${suma.toFixed(10)}</td>
+          <td>N/A</td>
+          <td>${errorAbsolutoPorcFinal.toFixed(6)}%</td>
+        `;
+        
+        // Incrementa el contador para el siguiente término
+        n++;
+        
+        // Bucle principal para calcular la serie de Mclaurin
+        while (true) {
+          anterior = suma; // Guardamos el valor anterior
+          
+          // Calcula el siguiente término: x^n/n!
+          let nuevoTermino = Math.pow(x, n) / factorial(n);
+          suma += nuevoTermino; // Añade el término a la suma
+          
+          // Calcula los errores
+          // Error relativo: (Aproximación actual - Aproximación previa) / Aproximación previa * 100
+          let errorRelativoPorc = Math.abs((suma - anterior) / anterior) * 100;
+          
+          // Error absoluto: (Aproximación / valor calculado de e^x) * 100 = 100 - resultado
+          errorAbsolutoPorc = (suma / resultadoReal) * 100;
+          errorAbsolutoPorcFinal = 100 - errorAbsolutoPorc;
+          
+          // Crea una nueva fila en la tabla para este término
+          const fila = tabla.insertRow();
+          fila.style.animationDelay = `${delay}ms`; // Retraso para efecto escalonado
+          delay += 50; // Incrementa el retraso para la siguiente fila
+          
+          // Llena la fila con los datos calculados
+          fila.innerHTML = `
+            <td>${n + 1}</td>
+            <td>${suma.toFixed(10)}</td>
+            <td>${errorRelativoPorc.toFixed(6)}%</td>
+            <td>${errorAbsolutoPorcFinal.toFixed(6)}%</td>
+          `;
+          
+          // Si el error absoluto es menor o igual al margen deseado, termina
+          if (Math.abs(errorAbsolutoPorcFinal) <= margen) break;
+          
+          // Incrementa el contador para el siguiente término
+          n++;
+          // Límite de seguridad para evitar bucles infinitos
+          if (n > 100) break;
+        }
+        
+        // Actualiza la información del resultado
+        document.getElementById('x-value').textContent = x;
+        document.getElementById('real-value').textContent = resultadoReal.toFixed(10);
+        document.getElementById('terms-needed').textContent = n + 1;
+        document.getElementById('result-info').style.display = 'block';
+        
+        // Oculta el indicador de carga
+        document.getElementById('loading').style.display = 'none';
+      }, 300); // Pequeño retraso para mostrar la animación de carga
+    }
+    
+    // Evento para permitir navegar entre campos con la tecla Enter
+    document.getElementById('x').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('error').focus(); // Pasa al siguiente campo
+      }
+    });
+    
+    // Evento para iniciar el cálculo al presionar Enter en el último campo
+    document.getElementById('error').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        calcular(); // Inicia el cálculo
+      }
+    });
+  </script>
+</body>
+</html>
